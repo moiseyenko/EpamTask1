@@ -1,6 +1,6 @@
 package by.epam.task1.entity;
 
-import by.epam.task1.util.PriceCategory;
+import by.epam.task1.util.PriceType;
 
 public class Tariff {
 
@@ -9,17 +9,17 @@ public class Tariff {
 	private double connectionFee;
 	private int subscribersQuantity;
 
-	private PriceCategory sameNetPrice;
-	private PriceCategory otherNetPrice;
-	private PriceCategory landlinePrice;
-	private PriceCategory internetPrice;
+	private PriceType sameNetPrice;
+	private PriceType otherNetPrice;
+	private PriceType landlinePrice;
+	private PriceType internetPrice;
 
 	public Tariff() {
 
 	}
 
-	public Tariff(String name, double payroll, PriceCategory sameNetPrice, PriceCategory otherNetPrice,
-			PriceCategory landlinePrice, PriceCategory internetPrice, double connectionFee, int subscribersQuantity) {
+	public Tariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice, PriceType landlinePrice,
+			PriceType internetPrice, double connectionFee, int subscribersQuantity) {
 
 		this.name = name;
 
@@ -65,38 +65,38 @@ public class Tariff {
 	}
 	////////////////////////////////////////////////////////////////////
 
-	public PriceCategory getSameNetPrice() {
+	public PriceType getSameNetPrice() {
 		return sameNetPrice;
 	}
 
-	public void setSameNetPrice(PriceCategory sameNetPrice) {
+	public void setSameNetPrice(PriceType sameNetPrice) {
 		this.sameNetPrice = sameNetPrice;
 	}
 	////////////////////////////////////////////////////////////////////
 
-	public PriceCategory getOtherNetPrice() {
+	public PriceType getOtherNetPrice() {
 		return otherNetPrice;
 	}
 
-	public void setOtherNetPrice(PriceCategory otherNetPrice) {
+	public void setOtherNetPrice(PriceType otherNetPrice) {
 		this.otherNetPrice = otherNetPrice;
 	}
 	////////////////////////////////////////////////////////////////////
 
-	public PriceCategory getLandlinePrice() {
+	public PriceType getLandlinePrice() {
 		return landlinePrice;
 	}
 
-	public void setLandlinePrice(PriceCategory landlinePrice) {
+	public void setLandlinePrice(PriceType landlinePrice) {
 		this.landlinePrice = landlinePrice;
 	}
 	////////////////////////////////////////////////////////////////////
 
-	public PriceCategory getInternetPrice() {
+	public PriceType getInternetPrice() {
 		return internetPrice;
 	}
 
-	public void setInternetPrice(PriceCategory internetPrice) {
+	public void setInternetPrice(PriceType internetPrice) {
 		this.internetPrice = internetPrice;
 	}
 	////////////////////////////////////////////////////////////////////
@@ -155,32 +155,44 @@ public class Tariff {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof Tariff))
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Tariff other = (Tariff) obj;
-		if (Double.doubleToLongBits(connectionFee) != Double.doubleToLongBits(other.connectionFee))
+		if (Double.doubleToLongBits(connectionFee) != Double.doubleToLongBits(other.connectionFee)) {
 			return false;
-		if (internetPrice != other.internetPrice)
+		}
+		if (internetPrice != other.internetPrice) {
 			return false;
-		if (landlinePrice != other.landlinePrice)
+		}
+		if (landlinePrice != other.landlinePrice) {
 			return false;
+		}
 		if (name == null) {
-			if (other.name != null)
+			if (other.name != null) {
 				return false;
-		} else if (!name.equals(other.name))
+			}
+		} else if (!name.equals(other.name)) {
 			return false;
-		if (otherNetPrice != other.otherNetPrice)
+		}
+		if (otherNetPrice != other.otherNetPrice) {
 			return false;
-		if (Double.doubleToLongBits(payroll) != Double.doubleToLongBits(other.payroll))
+		}
+		if (Double.doubleToLongBits(payroll) != Double.doubleToLongBits(other.payroll)) {
 			return false;
-		if (sameNetPrice != other.sameNetPrice)
+		}
+		if (sameNetPrice != other.sameNetPrice) {
 			return false;
-		if (subscribersQuantity != other.subscribersQuantity)
+		}
+		if (subscribersQuantity != other.subscribersQuantity) {
 			return false;
+		}
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////

@@ -1,13 +1,13 @@
 package by.epam.task1.entity;
 
-import by.epam.task1.util.PriceCategory;
+import by.epam.task1.util.PriceType;
 
 public class RemainTariff extends Tariff {
 
 	private double remainingRate;
 
-	public RemainTariff(String name, double payroll, PriceCategory sameNetPrice, PriceCategory otherNetPrice,
-			PriceCategory landlinePrice, PriceCategory internetPrice, double connectionFee, int subscribersQuantity,
+	public RemainTariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice,
+			PriceType landlinePrice, PriceType internetPrice, double connectionFee, int subscribersQuantity,
 			double remainingRate) {
 
 		super(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, connectionFee,
@@ -46,15 +46,19 @@ public class RemainTariff extends Tariff {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (!(obj instanceof RemainTariff))
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		RemainTariff other = (RemainTariff) obj;
-		if (Double.doubleToLongBits(remainingRate) != Double.doubleToLongBits(other.remainingRate))
+		if (Double.doubleToLongBits(remainingRate) != Double.doubleToLongBits(other.remainingRate)) {
 			return false;
+		}
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////

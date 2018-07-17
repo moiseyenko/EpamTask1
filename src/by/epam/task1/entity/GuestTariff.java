@@ -1,14 +1,13 @@
 package by.epam.task1.entity;
 
-import by.epam.task1.util.PriceCategory;
+import by.epam.task1.util.PriceType;
 
 public class GuestTariff extends Tariff {
 
 	private int days;
 
-	public GuestTariff(String name, double payroll, PriceCategory sameNetPrice, PriceCategory otherNetPrice,
-			PriceCategory landlinePrice, PriceCategory internetPrice, double connectionFee, int subscribersQuantity,
-			int days) {
+	public GuestTariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice,
+			PriceType landlinePrice, PriceType internetPrice, double connectionFee, int subscribersQuantity, int days) {
 
 		super(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, connectionFee,
 				subscribersQuantity);
@@ -51,15 +50,19 @@ public class GuestTariff extends Tariff {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (!(obj instanceof GuestTariff))
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		GuestTariff other = (GuestTariff) obj;
-		if (days != other.days)
+		if (days != other.days) {
 			return false;
+		}
 		return true;
 	}
 

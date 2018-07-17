@@ -1,13 +1,13 @@
 package by.epam.task1.entity;
 
-import by.epam.task1.util.PriceCategory;
+import by.epam.task1.util.PriceType;
 
 public class UnlimInternetTariff extends Tariff {
 
 	private int modemMode;
 
-	public UnlimInternetTariff(String name, double payroll, PriceCategory sameNetPrice, PriceCategory otherNetPrice,
-			PriceCategory landlinePrice, PriceCategory internetPrice, double connectionFee, int subscribersQuantity,
+	public UnlimInternetTariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice,
+			PriceType landlinePrice, PriceType internetPrice, double connectionFee, int subscribersQuantity,
 			int modemMode) {
 
 		super(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, connectionFee,
@@ -15,7 +15,7 @@ public class UnlimInternetTariff extends Tariff {
 
 		modemModeRestriction(modemMode);
 		this.modemMode = modemMode;
-		
+
 		internetPriceRestriction(internetPrice);
 		super.setInternetPrice(internetPrice);
 	}
@@ -35,20 +35,20 @@ public class UnlimInternetTariff extends Tariff {
 		}
 	}
 	////////////////////////////////////////////////////////////////////
-	
+
 	@Override
-	public void setInternetPrice(PriceCategory internetPrice) {
+	public void setInternetPrice(PriceType internetPrice) {
 		internetPriceRestriction(internetPrice);
 		super.setInternetPrice(internetPrice);
-		
+
 	}
-	
-	private void internetPriceRestriction(PriceCategory internetPrice) {
-		if(!internetPrice.equals(PriceCategory.ZERO)) {
+
+	private void internetPriceRestriction(PriceType internetPrice) {
+		if (!internetPrice.equals(PriceType.ZERO)) {
 			throw new IllegalArgumentException("InternetPrice amount for UmlimInternet tariffs must be equal to zero");
-			
+
 		}
-			
+
 	}
 	////////////////////////////////////////////////////////////////////
 
@@ -63,15 +63,19 @@ public class UnlimInternetTariff extends Tariff {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (!(obj instanceof UnlimInternetTariff))
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		UnlimInternetTariff other = (UnlimInternetTariff) obj;
-		if (modemMode != other.modemMode)
+		if (modemMode != other.modemMode) {
 			return false;
+		}
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////

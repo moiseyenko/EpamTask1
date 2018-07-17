@@ -6,7 +6,7 @@ import java.util.Map;
 import by.epam.task1.entity.Range;
 import by.epam.task1.entity.Tariff;
 import by.epam.task1.util.Message;
-import by.epam.task1.util.Parameter;
+import by.epam.task1.util.ParameterType;
 import by.epam.task1.util.TariffConstants;
 import by.epam.task1.util.TariffHelper;
 
@@ -24,8 +24,8 @@ public class Runner {
 		TariffHelper.sortByPayroll(tariffs);
 		Message.showMsg("after sorting: ", tariffs);
 
-		Map<Parameter, Range> inputParameters = TariffHelper.readParametersRange(TariffConstants.PARAMETERS_PATH);
-		List<String> resultList = TariffHelper.formSuitTariffs(tariffs, inputParameters);
+		Map<ParameterType, Range> inputParameters = TariffHelper.readParametersRange(TariffConstants.PARAMETERS_PATH);
+		List<String> resultList = TariffHelper.SearchTariff(tariffs, inputParameters);
 		Message.showMsg("Suit tariffs: ", resultList);
 
 	}

@@ -1,16 +1,16 @@
 package by.epam.task1.entity;
 
-import by.epam.task1.util.PriceCategory;
-import by.epam.task1.util.SocialGroup;
+import by.epam.task1.util.PriceType;
+import by.epam.task1.util.SocialGroupType;
 
 public class SocialTariff extends Tariff {
 
 	private int favourNumber;
-	private SocialGroup group;
+	private SocialGroupType group;
 
-	public SocialTariff(String name, double payroll, PriceCategory sameNetPrice, PriceCategory otherNetPrice,
-			PriceCategory landlinePrice, PriceCategory internetPrice, double connectionFee, int subscribersQuantity,
-			int favourNumber, SocialGroup group) {
+	public SocialTariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice,
+			PriceType landlinePrice, PriceType internetPrice, double connectionFee, int subscribersQuantity,
+			int favourNumber, SocialGroupType group) {
 
 		super(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, connectionFee,
 				subscribersQuantity);
@@ -19,16 +19,14 @@ public class SocialTariff extends Tariff {
 
 		favourNumberRestriction(favourNumber);
 		this.favourNumber = favourNumber;
-
-		super.setPayroll(discountPayroll(payroll));
 	}
 	////////////////////////////////////////////////////////////////////
 
-	public SocialGroup getGroup() {
+	public SocialGroupType getGroup() {
 		return group;
 	}
 
-	public void setGroup(SocialGroup group) {
+	public void setGroup(SocialGroupType group) {
 		this.group = group;
 	}
 	////////////////////////////////////////////////////////////////////
@@ -43,32 +41,13 @@ public class SocialTariff extends Tariff {
 	}
 
 	private void favourNumberRestriction(int favourNumber) {
-		if (group.equals(SocialGroup.YOUTH) && favourNumber < 5) {
+		if (group.equals(SocialGroupType.YOUTH) && favourNumber < 5) {
 			throw new IllegalArgumentException("Quantity of favourNumber for youth must be equal to or greater than 5");
-		} else if (group.equals(SocialGroup.PENSIONER) && favourNumber < 3) {
+		} else if (group.equals(SocialGroupType.PENSIONER) && favourNumber < 3) {
 			throw new IllegalArgumentException(
 					"Quantity of favourNumber for pensioners must be equal to or greater than 3");
 		} else if (favourNumber < 0) {
 			throw new IllegalArgumentException("Quantity of favourNumber must be equal greater than zero");
-		}
-	}
-	////////////////////////////////////////////////////////////////////
-
-	@Override
-	public void setPayroll(double payroll) {
-		super.setPayroll(discountPayroll(payroll));
-	}
-
-	private double discountPayroll(double payroll) {
-		switch (group) {
-		case YOUTH:
-			return 0.5 * payroll;
-		case PENSIONER:
-			return 0.3 * payroll;
-		case OTHER:
-			return payroll;
-		default:
-			throw new IllegalArgumentException("Invalid social group");
 		}
 	}
 	////////////////////////////////////////////////////////////////////
@@ -85,17 +64,22 @@ public class SocialTariff extends Tariff {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
-		if (!(obj instanceof SocialTariff))
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		SocialTariff other = (SocialTariff) obj;
-		if (favourNumber != other.favourNumber)
+		if (favourNumber != other.favourNumber) {
 			return false;
-		if (group != other.group)
+		}
+		if (group != other.group) {
 			return false;
+		}
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////

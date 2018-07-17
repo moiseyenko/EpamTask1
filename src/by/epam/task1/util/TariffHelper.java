@@ -56,36 +56,57 @@ public class TariffHelper {
 	}
 	/////////////////////////////////////////////////////////////////////////////
 
+	private static SocialTariff SocialBonus(StringTokenizer t) {
+		
+		String name = t.nextToken();
+		double payroll = Double.parseDouble(t.nextToken());
+		PriceType sameNetPrice = PriceType.valueOf(t.nextToken());
+		PriceType otherNetPrice = PriceType.valueOf(t.nextToken());
+		PriceType landlinePrice = PriceType.valueOf(t.nextToken()); 
+		PriceType internetPrice = PriceType.valueOf(t.nextToken());
+		double connectionFee = Double.parseDouble(t.nextToken());
+		int subscribersQuantity = Integer.parseInt(t.nextToken());
+		int favourNumber = Integer.parseInt(t.nextToken());
+		SocialGroupType group = SocialGroupType.valueOf(t.nextToken().toUpperCase());
+		
+		if (group.equals(SocialGroupType.YOUTH)) {
+			payroll *= 0.5;
+		}else if (group.equals(SocialGroupType.PENSIONER)) {
+			payroll *= 0.3;
+		}
+		return new SocialTariff(name, payroll, sameNetPrice, otherNetPrice, landlinePrice,
+				internetPrice, connectionFee, subscribersQuantity, favourNumber, group);
+		
+	}
+	
+	
+	/////////////////////////////////////////////////////////////////////////////
 	// create appropriate Tariff object according to the beginning of each line
 	private static Tariff createApproriateTariff(StringTokenizer t) {
 
 		TariffType kindTariff = TariffType.valueOf(t.nextToken());
 		switch (kindTariff) {
 		case SOCIAL_TARIFF:
-			return new SocialTariff(t.nextToken(), Double.parseDouble(t.nextToken()),
-					PriceCategory.valueOf(t.nextToken()), PriceCategory.valueOf(t.nextToken()),
-					PriceCategory.valueOf(t.nextToken()), PriceCategory.valueOf(t.nextToken()),
-					Double.parseDouble(t.nextToken()), Integer.parseInt(t.nextToken()), Integer.parseInt(t.nextToken()),
-					SocialGroup.valueOf(t.nextToken().toUpperCase()));
+			return SocialBonus(t);
 
 		case GUEST_TARIFF:
 			return new GuestTariff(t.nextToken(), Double.parseDouble(t.nextToken()),
-					PriceCategory.valueOf(t.nextToken()), PriceCategory.valueOf(t.nextToken()),
-					PriceCategory.valueOf(t.nextToken()), PriceCategory.valueOf(t.nextToken()),
+					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
+					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
 					Double.parseDouble(t.nextToken()), Integer.parseInt(t.nextToken()),
 					Integer.parseInt(t.nextToken()));
 
 		case REMAIN_TARIFF:
 			return new RemainTariff(t.nextToken(), Double.parseDouble(t.nextToken()),
-					PriceCategory.valueOf(t.nextToken()), PriceCategory.valueOf(t.nextToken()),
-					PriceCategory.valueOf(t.nextToken()), PriceCategory.valueOf(t.nextToken()),
+					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
+					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
 					Double.parseDouble(t.nextToken()), Integer.parseInt(t.nextToken()),
 					Double.parseDouble(t.nextToken()));
 
 		case UNLIM_INTERNET_TARIFF:
 			return new UnlimInternetTariff(t.nextToken(), Double.parseDouble(t.nextToken()),
-					PriceCategory.valueOf(t.nextToken()), PriceCategory.valueOf(t.nextToken()),
-					PriceCategory.valueOf(t.nextToken()), PriceCategory.valueOf(t.nextToken()),
+					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
+					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
 					Double.parseDouble(t.nextToken()), Integer.parseInt(t.nextToken()),
 					Integer.parseInt(t.nextToken()));
 
@@ -95,9 +116,9 @@ public class TariffHelper {
 	}
 
 	// return parameters' map after reading the file
-	public static Map<Parameter, Range> readParametersRange(String path) {
+	public static Map<ParameterType, Range> readParametersRange(String path) {
 
-		Map<Parameter, Range> inputParameters = new HashMap<>();
+		Map<ParameterType, Range> inputParameters = new HashMap<>();
 
 		try (Scanner sc = new Scanner(Paths.get(path))) {
 			String line;
@@ -105,19 +126,19 @@ public class TariffHelper {
 				line = sc.nextLine();
 				StringTokenizer t = new StringTokenizer(line, ":");
 
-				Parameter key;
+				ParameterType key;
 				String from;
 				String to;
 
 				if (t.countTokens() < 2) {
 					continue;
 				} else if (t.countTokens() < 3 && (line.startsWith("NAME") | line.startsWith("GROUP"))) {
-					key = Parameter.valueOf(t.nextToken());
+					key = ParameterType.valueOf(t.nextToken());
 					from = to = t.nextToken();
 				} else if (t.countTokens() < 3) {
 					continue;
 				} else {
-					key = Parameter.valueOf(t.nextToken());
+					key = ParameterType.valueOf(t.nextToken());
 					from = t.nextToken();
 					to = t.nextToken();
 				}
@@ -135,7 +156,7 @@ public class TariffHelper {
 	/////////////////////////////////////////////////////////////////////////////
 
 	// form list with suit tariffs
-	public static List<String> formSuitTariffs(List<Tariff> tariffs, Map<Parameter, Range> inputParameters) {
+	public static List<String> SearchTariff(List<Tariff> tariffs, Map<ParameterType, Range> inputParameters) {
 
 		List<String> list = new ArrayList<>();
 
@@ -149,15 +170,14 @@ public class TariffHelper {
 	/////////////////////////////////////////////////////////////////////////////
 
 	// check what parameters have been written in the file
-	private static boolean checkParameters(Tariff tariff, Map<Parameter, Range> inputParameters) {
+	private static boolean checkParameters(Tariff tariff, Map<ParameterType, Range> inputParameters) {
 
-		for (Map.Entry<Parameter, Range> entry : inputParameters.entrySet()) {
-
-			Parameter key = entry.getKey();
+		for (Map.Entry<ParameterType, Range> entry : inputParameters.entrySet()) {
+			
 			String from = entry.getValue().getFrom();
 			String to = entry.getValue().getTo();
 
-			switch (key) {
+			switch (entry.getKey()) {
 			case NAME:
 				if (tariff.getName().toLowerCase().contains(from.toLowerCase())) {
 					continue;
