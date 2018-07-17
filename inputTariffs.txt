@@ -1,0 +1,5 @@
+SocialTariff:ForYouth:YOUTH:55:1000:3:55
+SocialTariff:ForPensioner:PENSIONER:60:0:4:34
+TouristTariff:Tourist:25:1500:1:21
+AllInTariff:Business:220:101:1000:34
+InternetOnlyTariff:Internet5000:15:5000:40
