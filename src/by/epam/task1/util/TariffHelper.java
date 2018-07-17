@@ -57,29 +57,28 @@ public class TariffHelper {
 	/////////////////////////////////////////////////////////////////////////////
 
 	private static SocialTariff SocialBonus(StringTokenizer t) {
-		
+
 		String name = t.nextToken();
 		double payroll = Double.parseDouble(t.nextToken());
 		PriceType sameNetPrice = PriceType.valueOf(t.nextToken());
 		PriceType otherNetPrice = PriceType.valueOf(t.nextToken());
-		PriceType landlinePrice = PriceType.valueOf(t.nextToken()); 
+		PriceType landlinePrice = PriceType.valueOf(t.nextToken());
 		PriceType internetPrice = PriceType.valueOf(t.nextToken());
 		double connectionFee = Double.parseDouble(t.nextToken());
 		int subscribersQuantity = Integer.parseInt(t.nextToken());
 		int favourNumber = Integer.parseInt(t.nextToken());
 		SocialGroupType group = SocialGroupType.valueOf(t.nextToken().toUpperCase());
-		
+
 		if (group.equals(SocialGroupType.YOUTH)) {
 			payroll *= 0.5;
-		}else if (group.equals(SocialGroupType.PENSIONER)) {
+		} else if (group.equals(SocialGroupType.PENSIONER)) {
 			payroll *= 0.3;
 		}
-		return new SocialTariff(name, payroll, sameNetPrice, otherNetPrice, landlinePrice,
-				internetPrice, connectionFee, subscribersQuantity, favourNumber, group);
-		
+		return new SocialTariff(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, connectionFee,
+				subscribersQuantity, favourNumber, group);
+
 	}
-	
-	
+
 	/////////////////////////////////////////////////////////////////////////////
 	// create appropriate Tariff object according to the beginning of each line
 	private static Tariff createApproriateTariff(StringTokenizer t) {
@@ -90,18 +89,16 @@ public class TariffHelper {
 			return SocialBonus(t);
 
 		case GUEST_TARIFF:
-			return new GuestTariff(t.nextToken(), Double.parseDouble(t.nextToken()),
+			return new GuestTariff(t.nextToken(), Double.parseDouble(t.nextToken()), PriceType.valueOf(t.nextToken()),
 					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
-					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
-					Double.parseDouble(t.nextToken()), Integer.parseInt(t.nextToken()),
-					Integer.parseInt(t.nextToken()));
+					PriceType.valueOf(t.nextToken()), Double.parseDouble(t.nextToken()),
+					Integer.parseInt(t.nextToken()), Integer.parseInt(t.nextToken()));
 
 		case REMAIN_TARIFF:
-			return new RemainTariff(t.nextToken(), Double.parseDouble(t.nextToken()),
+			return new RemainTariff(t.nextToken(), Double.parseDouble(t.nextToken()), PriceType.valueOf(t.nextToken()),
 					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
-					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
-					Double.parseDouble(t.nextToken()), Integer.parseInt(t.nextToken()),
-					Double.parseDouble(t.nextToken()));
+					PriceType.valueOf(t.nextToken()), Double.parseDouble(t.nextToken()),
+					Integer.parseInt(t.nextToken()), Double.parseDouble(t.nextToken()));
 
 		case UNLIM_INTERNET_TARIFF:
 			return new UnlimInternetTariff(t.nextToken(), Double.parseDouble(t.nextToken()),
@@ -173,7 +170,7 @@ public class TariffHelper {
 	private static boolean checkParameters(Tariff tariff, Map<ParameterType, Range> inputParameters) {
 
 		for (Map.Entry<ParameterType, Range> entry : inputParameters.entrySet()) {
-			
+
 			String from = entry.getValue().getFrom();
 			String to = entry.getValue().getTo();
 

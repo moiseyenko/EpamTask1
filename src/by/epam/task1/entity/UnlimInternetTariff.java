@@ -17,7 +17,6 @@ public class UnlimInternetTariff extends Tariff {
 		this.modemMode = modemMode;
 
 		internetPriceRestriction(internetPrice);
-		super.setInternetPrice(internetPrice);
 	}
 	////////////////////////////////////////////////////////////////////
 
