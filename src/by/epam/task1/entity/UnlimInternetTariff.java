@@ -15,6 +15,9 @@ public class UnlimInternetTariff extends Tariff {
 
 		modemModeRestriction(modemMode);
 		this.modemMode = modemMode;
+		
+		internetPriceRestriction(internetPrice);
+		super.setInternetPrice(internetPrice);
 	}
 	////////////////////////////////////////////////////////////////////
 
@@ -30,6 +33,22 @@ public class UnlimInternetTariff extends Tariff {
 		if (modemMode <= 0) {
 			throw new IllegalArgumentException("ModemMode amount must be greater than zero");
 		}
+	}
+	////////////////////////////////////////////////////////////////////
+	
+	@Override
+	public void setInternetPrice(PriceCategory internetPrice) {
+		internetPriceRestriction(internetPrice);
+		super.setInternetPrice(internetPrice);
+		
+	}
+	
+	private void internetPriceRestriction(PriceCategory internetPrice) {
+		if(!internetPrice.equals(PriceCategory.ZERO)) {
+			throw new IllegalArgumentException("InternetPrice amount for UmlimInternet tariffs must be equal to zero");
+			
+		}
+			
 	}
 	////////////////////////////////////////////////////////////////////
 
