@@ -6,12 +6,15 @@ public class Tariff {
 
 	private String name;
 	private double payroll;
-	private double connectionFee;
 	private int subscribersQuantity;
 
+	// one minute's price in the same network
 	private PriceType sameNetPrice;
+	// one minute's price to other networks
 	private PriceType otherNetPrice;
+	// one minute's price to landline number
 	private PriceType landlinePrice;
+	// one megabyte's price
 	private PriceType internetPrice;
 
 	public Tariff() {
@@ -19,11 +22,9 @@ public class Tariff {
 	}
 
 	public Tariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice, PriceType landlinePrice,
-			PriceType internetPrice, double connectionFee, int subscribersQuantity) {
+			PriceType internetPrice, int subscribersQuantity) {
 
 		this.name = name;
-
-		payrollRestriction(payroll);
 		this.payroll = payroll;
 
 		this.sameNetPrice = sameNetPrice;
@@ -31,14 +32,9 @@ public class Tariff {
 		this.landlinePrice = landlinePrice;
 		this.internetPrice = internetPrice;
 
-		connectionFeeRestriction(connectionFee);
-		this.connectionFee = connectionFee;
-
-		subscribersQuantityRestriction(subscribersQuantity);
 		this.subscribersQuantity = subscribersQuantity;
 
 	}
-	////////////////////////////////////////////////////////////////////
 
 	public String getName() {
 		return name;
@@ -47,23 +43,14 @@ public class Tariff {
 	public void setName(String name) {
 		this.name = name;
 	}
-	////////////////////////////////////////////////////////////////////
 
 	public double getPayroll() {
 		return payroll;
 	}
 
 	public void setPayroll(double payroll) {
-		payrollRestriction(payroll);
 		this.payroll = payroll;
 	}
-
-	private void payrollRestriction(double payroll) {
-		if (payroll <= 0) {
-			throw new IllegalArgumentException("Payroll amount must be greater than zero");
-		}
-	}
-	////////////////////////////////////////////////////////////////////
 
 	public PriceType getSameNetPrice() {
 		return sameNetPrice;
@@ -72,7 +59,6 @@ public class Tariff {
 	public void setSameNetPrice(PriceType sameNetPrice) {
 		this.sameNetPrice = sameNetPrice;
 	}
-	////////////////////////////////////////////////////////////////////
 
 	public PriceType getOtherNetPrice() {
 		return otherNetPrice;
@@ -81,7 +67,6 @@ public class Tariff {
 	public void setOtherNetPrice(PriceType otherNetPrice) {
 		this.otherNetPrice = otherNetPrice;
 	}
-	////////////////////////////////////////////////////////////////////
 
 	public PriceType getLandlinePrice() {
 		return landlinePrice;
@@ -90,7 +75,6 @@ public class Tariff {
 	public void setLandlinePrice(PriceType landlinePrice) {
 		this.landlinePrice = landlinePrice;
 	}
-	////////////////////////////////////////////////////////////////////
 
 	public PriceType getInternetPrice() {
 		return internetPrice;
@@ -99,39 +83,15 @@ public class Tariff {
 	public void setInternetPrice(PriceType internetPrice) {
 		this.internetPrice = internetPrice;
 	}
-	////////////////////////////////////////////////////////////////////
-
-	public double getConnectionFee() {
-		return connectionFee;
-	}
-
-	public void setConnectionFee(double connectionFee) {
-		connectionFeeRestriction(connectionFee);
-		this.connectionFee = connectionFee;
-	}
-
-	private void connectionFeeRestriction(double connectionFee) {
-		if (connectionFee <= 0) {
-			throw new IllegalArgumentException("Connection fee must be greater than zero");
-		}
-	}
-	////////////////////////////////////////////////////////////////////
 
 	public int getSubscribersQuantity() {
 		return subscribersQuantity;
 	}
 
 	public void setSubscribersQuantity(int subscribersQuantity) {
-		subscribersQuantityRestriction(subscribersQuantity);
+
 		this.subscribersQuantity = subscribersQuantity;
 	}
-
-	private void subscribersQuantityRestriction(int subscribersQuantity) {
-		if (subscribersQuantity < 0) {
-			throw new IllegalArgumentException("Subscribers quantity must be equal to or greater than 0");
-		}
-	}
-	////////////////////////////////////////////////////////////////////
 
 	@Override
 	public int hashCode() {
@@ -139,19 +99,16 @@ public class Tariff {
 		final int prime = 31;
 		int result = 1;
 		long temp;
-		temp = Double.doubleToLongBits(connectionFee);
+		temp = Double.doubleToLongBits(payroll);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((internetPrice == null) ? 0 : internetPrice.hashCode());
 		result = prime * result + ((landlinePrice == null) ? 0 : landlinePrice.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((otherNetPrice == null) ? 0 : otherNetPrice.hashCode());
-		temp = Double.doubleToLongBits(payroll);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((sameNetPrice == null) ? 0 : sameNetPrice.hashCode());
 		result = prime * result + subscribersQuantity;
 		return result;
 	}
-	////////////////////////////////////////////////////////////////////
 
 	@Override
 	public boolean equals(Object obj) {
@@ -165,9 +122,6 @@ public class Tariff {
 			return false;
 		}
 		Tariff other = (Tariff) obj;
-		if (Double.doubleToLongBits(connectionFee) != Double.doubleToLongBits(other.connectionFee)) {
-			return false;
-		}
 		if (internetPrice != other.internetPrice) {
 			return false;
 		}
@@ -195,15 +149,15 @@ public class Tariff {
 		}
 		return true;
 	}
-	////////////////////////////////////////////////////////////////////
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [name=" + name + ", payroll=" + payroll + ", sameNetPrice=" + sameNetPrice
-				+ ", otherNetPrice=" + otherNetPrice + ", landlinePrice=" + landlinePrice + ", internetPrice="
-				+ internetPrice + ", connectionFee=" + connectionFee + ", subscribersQuantity=" + subscribersQuantity
-				+ "]";
+
+		return getClass().getSimpleName() + " [name=" + name + ", payroll="
+				+ String.format("%.1f", payroll) + ", sameNetPrice=" + sameNetPrice + ", otherNetPrice="
+				+ otherNetPrice + ", landlinePrice=" + landlinePrice + ", internetPrice=" + internetPrice
+				+ ", subscribersQuantity=" + subscribersQuantity + "]";
+
 	}
-	////////////////////////////////////////////////////////////////////
 
 }

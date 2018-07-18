@@ -3,6 +3,7 @@ package by.epam.task1.util;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -11,27 +12,25 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import by.epam.task1.entity.GuestTariff;
-import by.epam.task1.entity.Range;
-import by.epam.task1.entity.RemainTariff;
 import by.epam.task1.entity.SocialTariff;
 import by.epam.task1.entity.Tariff;
-import by.epam.task1.entity.UnlimInternetTariff;
+import by.epam.task1.entity.InternetTariff;
 
 public class TariffHelper {
 
-	public static int countTotalAbonents(List<Tariff> tariffList) {
+	// count total subscribers amount
+	public static int countTotalSubscribers(List<Tariff> tariffList) {
 		int result = 0;
 		for (Tariff tariff : tariffList) {
 			result += tariff.getSubscribersQuantity();
 		}
 		return result;
 	}
-	/////////////////////////////////////////////////////////////////////////////
 
+	// sort tariffs by payroll
 	public static void sortByPayroll(List<Tariff> tariffList) {
 		tariffList.sort(Comparator.comparingDouble(Tariff::getPayroll));
 	}
-	/////////////////////////////////////////////////////////////////////////////
 
 	// return tariffs' list after reading the file
 	public static List<Tariff> readTariffsFile(String path) {
@@ -44,7 +43,7 @@ public class TariffHelper {
 				line = sc.nextLine();
 				StringTokenizer t = new StringTokenizer(line, ":");
 				// create appropriate Tariff object according to the beginning of each line
-				tariffs.add(createApproriateTariff(t));
+				tariffs.add(initializeTariff(t));
 
 			}
 
@@ -54,62 +53,108 @@ public class TariffHelper {
 
 		return tariffs;
 	}
-	/////////////////////////////////////////////////////////////////////////////
 
-	private static SocialTariff SocialBonus(StringTokenizer t) {
+	// initialize tariff
+	private static Tariff initializeTariff(StringTokenizer t) {
 
+		TariffType tariffType = TariffType.valueOf(t.nextToken());
 		String name = t.nextToken();
+
 		double payroll = Double.parseDouble(t.nextToken());
+		payrollRestriction(payroll);
+
 		PriceType sameNetPrice = PriceType.valueOf(t.nextToken());
 		PriceType otherNetPrice = PriceType.valueOf(t.nextToken());
 		PriceType landlinePrice = PriceType.valueOf(t.nextToken());
 		PriceType internetPrice = PriceType.valueOf(t.nextToken());
-		double connectionFee = Double.parseDouble(t.nextToken());
+
 		int subscribersQuantity = Integer.parseInt(t.nextToken());
-		int favourNumber = Integer.parseInt(t.nextToken());
-		SocialGroupType group = SocialGroupType.valueOf(t.nextToken().toUpperCase());
+		subscribersQuantityRestriction(subscribersQuantity);
 
-		if (group.equals(SocialGroupType.YOUTH)) {
-			payroll *= 0.5;
-		} else if (group.equals(SocialGroupType.PENSIONER)) {
-			payroll *= 0.3;
-		}
-		return new SocialTariff(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, connectionFee,
-				subscribersQuantity, favourNumber, group);
-
-	}
-
-	/////////////////////////////////////////////////////////////////////////////
-	// create appropriate Tariff object according to the beginning of each line
-	private static Tariff createApproriateTariff(StringTokenizer t) {
-
-		TariffType kindTariff = TariffType.valueOf(t.nextToken());
-		switch (kindTariff) {
+		switch (tariffType) {
 		case SOCIAL_TARIFF:
-			return SocialBonus(t);
+
+			int favourNumber = Integer.parseInt(t.nextToken());
+			SocialGroupType group = SocialGroupType.valueOf(t.nextToken().toUpperCase());
+			favourNumberRestriction(favourNumber, group);
+			payroll = socialTariffBonus(group, payroll);
+			return new SocialTariff(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice,
+					subscribersQuantity, favourNumber, group);
 
 		case GUEST_TARIFF:
-			return new GuestTariff(t.nextToken(), Double.parseDouble(t.nextToken()), PriceType.valueOf(t.nextToken()),
-					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
-					PriceType.valueOf(t.nextToken()), Double.parseDouble(t.nextToken()),
-					Integer.parseInt(t.nextToken()), Integer.parseInt(t.nextToken()));
+			int days = Integer.parseInt(t.nextToken());
+			payroll = getPayrolRateForGuestTariff(days, payroll);
+			return new GuestTariff(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice,
+					subscribersQuantity, days);
 
-		case REMAIN_TARIFF:
-			return new RemainTariff(t.nextToken(), Double.parseDouble(t.nextToken()), PriceType.valueOf(t.nextToken()),
-					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
-					PriceType.valueOf(t.nextToken()), Double.parseDouble(t.nextToken()),
-					Integer.parseInt(t.nextToken()), Double.parseDouble(t.nextToken()));
-
-		case UNLIM_INTERNET_TARIFF:
-			return new UnlimInternetTariff(t.nextToken(), Double.parseDouble(t.nextToken()),
-					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
-					PriceType.valueOf(t.nextToken()), PriceType.valueOf(t.nextToken()),
-					Double.parseDouble(t.nextToken()), Integer.parseInt(t.nextToken()),
-					Integer.parseInt(t.nextToken()));
+		case INTERNET_TARIFF:
+			boolean unlim = Boolean.parseBoolean(t.nextToken());
+			internetPrice = internetTariffBonus(internetPrice, unlim);
+			return new InternetTariff(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice,
+					subscribersQuantity, unlim);
 
 		default:
 			throw new IllegalArgumentException("Invalid tariff's type");
 		}
+	}
+
+	// set payroll restrictions
+	public static void payrollRestriction(double payroll) {
+		if (payroll <= 0) {
+			throw new IllegalArgumentException("Payroll amount must be greater than zero");
+		}
+	}
+
+	// set restrictions to subscribers' quantity
+	public static void subscribersQuantityRestriction(int subscribersQuantity) {
+		if (subscribersQuantity < 0) {
+			throw new IllegalArgumentException("Subscribers quantity must be equal to or greater than 0");
+		}
+	}
+
+	// set favourNumber restrictions
+	public static void favourNumberRestriction(int favourNumber, SocialGroupType group) {
+		if (favourNumber < 0) {
+			throw new IllegalArgumentException("Quantity of favourNumber must be equal greater than zero");
+		} else if (group.equals(SocialGroupType.YOUTH) && favourNumber < 5) {
+			throw new IllegalArgumentException("Quantity of favourNumber for youth must be equal to or greater than 5");
+		} else if (group.equals(SocialGroupType.PENSIONER) && favourNumber < 3) {
+			throw new IllegalArgumentException(
+					"Quantity of favourNumber for pensioners must be equal to or greater than 3");
+		}
+	}
+
+	// set days' restrictions
+	public static void daysRestriction(int days) {
+		if (days <= 0) {
+			throw new IllegalArgumentException("Days amount must be greater than zero");
+		}
+	}
+
+	// set internetTariff's bonus depending on unlim parameter
+	public static PriceType internetTariffBonus(PriceType internetPrice, boolean unlim) {
+		if (unlim) {
+			return PriceType.ZERO;
+		} else {
+			return internetPrice;
+		}
+	}
+
+	// set socialTariff's bonus depending on subscriber's social group
+	public static double socialTariffBonus(SocialGroupType group, double payroll) {
+		if (group.equals(SocialGroupType.YOUTH)) {
+			return payroll *= TariffConstants.YOUTH_BONUS_RATE;
+		} else if (group.equals(SocialGroupType.PENSIONER)) {
+			return payroll *= TariffConstants.PENSIONER_BONUS_RATE;
+		} else {
+			return payroll;
+		}
+	}
+
+	// set payroll rate for guestTariff depending on days' number
+	public static double getPayrolRateForGuestTariff(int days, double payroll) {
+		int dayOfMonth = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+		return payroll *= (double) days / dayOfMonth;
 	}
 
 	// return parameters' map after reading the file
@@ -129,7 +174,8 @@ public class TariffHelper {
 
 				if (t.countTokens() < 2) {
 					continue;
-				} else if (t.countTokens() < 3 && (line.startsWith("NAME") | line.startsWith("GROUP"))) {
+				} else if (t.countTokens() < 3
+						&& (line.startsWith("NAME") | line.startsWith("GROUP") | line.startsWith("UNLIM"))) {
 					key = ParameterType.valueOf(t.nextToken());
 					from = to = t.nextToken();
 				} else if (t.countTokens() < 3) {
@@ -150,7 +196,6 @@ public class TariffHelper {
 
 		return inputParameters;
 	}
-	/////////////////////////////////////////////////////////////////////////////
 
 	// form list with suit tariffs
 	public static List<String> SearchTariff(List<Tariff> tariffs, Map<ParameterType, Range> inputParameters) {
@@ -164,7 +209,6 @@ public class TariffHelper {
 		}
 		return list;
 	}
-	/////////////////////////////////////////////////////////////////////////////
 
 	// check what parameters have been written in the file
 	private static boolean checkParameters(Tariff tariff, Map<ParameterType, Range> inputParameters) {
@@ -215,13 +259,6 @@ public class TariffHelper {
 				}
 				return false;
 
-			case CONNECTION_FEE:
-				if (tariff.getConnectionFee() >= Double.parseDouble(from)
-						&& tariff.getConnectionFee() <= Double.parseDouble(to)) {
-					continue;
-				}
-				return false;
-
 			case FAVOUR_NUMBER:
 
 				if (tariff instanceof SocialTariff
@@ -238,25 +275,16 @@ public class TariffHelper {
 				}
 				return false;
 
+			case UNLIM:
+				if (tariff instanceof InternetTariff
+						&& ((InternetTariff) tariff).isUnlim() == Boolean.parseBoolean(from)) {
+					continue;
+				}
+				return false;
+
 			case DAYS:
 				if (tariff instanceof GuestTariff && ((GuestTariff) tariff).getDays() >= Integer.parseInt(from)
 						&& ((GuestTariff) tariff).getDays() <= Integer.parseInt(to)) {
-					continue;
-				}
-				return false;
-
-			case MODEM_MODE:
-				if (tariff instanceof UnlimInternetTariff
-						&& ((UnlimInternetTariff) tariff).getModemMode() >= Integer.parseInt(from)
-						&& ((UnlimInternetTariff) tariff).getModemMode() <= Integer.parseInt(to)) {
-					continue;
-				}
-				return false;
-
-			case REMAINING_RATE:
-				if (tariff instanceof RemainTariff
-						&& ((RemainTariff) tariff).getRemainingRate() >= Double.parseDouble(from)
-						&& ((RemainTariff) tariff).getRemainingRate() <= Double.parseDouble(to)) {
 					continue;
 				}
 				return false;
@@ -267,6 +295,5 @@ public class TariffHelper {
 		}
 		return true;
 	}
-	/////////////////////////////////////////////////////////////////////////////
 
 }

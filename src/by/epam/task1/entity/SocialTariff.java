@@ -9,18 +9,14 @@ public class SocialTariff extends Tariff {
 	private SocialGroupType group;
 
 	public SocialTariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice,
-			PriceType landlinePrice, PriceType internetPrice, double connectionFee, int subscribersQuantity,
-			int favourNumber, SocialGroupType group) {
+			PriceType landlinePrice, PriceType internetPrice, int subscribersQuantity, int favourNumber,
+			SocialGroupType group) {
 
-		super(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, connectionFee,
-				subscribersQuantity);
+		super(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, subscribersQuantity);
 
 		this.group = group;
-
-		favourNumberRestriction(favourNumber);
 		this.favourNumber = favourNumber;
 	}
-	////////////////////////////////////////////////////////////////////
 
 	public SocialGroupType getGroup() {
 		return group;
@@ -29,28 +25,14 @@ public class SocialTariff extends Tariff {
 	public void setGroup(SocialGroupType group) {
 		this.group = group;
 	}
-	////////////////////////////////////////////////////////////////////
 
 	public int getFavourNumber() {
 		return favourNumber;
 	}
 
 	public void setFavourNumber(int favourNumber) {
-		favourNumberRestriction(favourNumber);
 		this.favourNumber = favourNumber;
 	}
-
-	private void favourNumberRestriction(int favourNumber) {
-		if (group.equals(SocialGroupType.YOUTH) && favourNumber < 5) {
-			throw new IllegalArgumentException("Quantity of favourNumber for youth must be equal to or greater than 5");
-		} else if (group.equals(SocialGroupType.PENSIONER) && favourNumber < 3) {
-			throw new IllegalArgumentException(
-					"Quantity of favourNumber for pensioners must be equal to or greater than 3");
-		} else if (favourNumber < 0) {
-			throw new IllegalArgumentException("Quantity of favourNumber must be equal greater than zero");
-		}
-	}
-	////////////////////////////////////////////////////////////////////
 
 	@Override
 	public int hashCode() {
@@ -60,7 +42,6 @@ public class SocialTariff extends Tariff {
 		result = prime * result + ((group == null) ? 0 : group.hashCode());
 		return result;
 	}
-	////////////////////////////////////////////////////////////////////
 
 	@Override
 	public boolean equals(Object obj) {
@@ -82,7 +63,6 @@ public class SocialTariff extends Tariff {
 		}
 		return true;
 	}
-	////////////////////////////////////////////////////////////////////
 
 	@Override
 	public String toString() {
@@ -90,6 +70,5 @@ public class SocialTariff extends Tariff {
 		String withoutLastBracketString = new String(superString.toCharArray(), 0, superString.length() - 1);
 		return withoutLastBracketString + ", favourNumber=" + favourNumber + ", group=" + group + "]";
 	}
-	////////////////////////////////////////////////////////////////////
 
 }

@@ -2,33 +2,31 @@ package by.epam.task1.entity;
 
 import by.epam.task1.util.PriceType;
 
-public class GuestTariff extends Tariff {
+public class InternetTariff extends Tariff {
 
-	private int days;
+	private boolean unlim;
 
-	public GuestTariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice,
-			PriceType landlinePrice, PriceType internetPrice, int subscribersQuantity, int days) {
+	public InternetTariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice,
+			PriceType landlinePrice, PriceType internetPrice, int subscribersQuantity, boolean unlim) {
 
 		super(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, subscribersQuantity);
 
-		this.days = days;
+		this.unlim = unlim;
 	}
 
-	public int getDays() {
-		return days;
+	public boolean isUnlim() {
+		return unlim;
 	}
 
-	public void setDays(int days) {
-		this.days = days;
+	public void setUnlim(boolean unlim) {
+		this.unlim = unlim;
 	}
-
-	
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + days;
+		result = prime * result + (unlim ? 1231 : 1237);
 		return result;
 	}
 
@@ -43,8 +41,8 @@ public class GuestTariff extends Tariff {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		GuestTariff other = (GuestTariff) obj;
-		if (days != other.days) {
+		InternetTariff other = (InternetTariff) obj;
+		if (unlim != other.unlim) {
 			return false;
 		}
 		return true;
@@ -54,7 +52,6 @@ public class GuestTariff extends Tariff {
 	public String toString() {
 		String superString = super.toString();
 		String withoutLastBracketString = new String(superString.toCharArray(), 0, superString.length() - 1);
-		return withoutLastBracketString + ", days=" + days + "]";
+		return withoutLastBracketString + ", unlim =" + unlim + "]";
 	}
-
 }
