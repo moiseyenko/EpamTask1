@@ -1,14 +1,15 @@
 package by.epam.task1.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import by.epam.task1.entity.GuestTariff;
@@ -37,20 +38,16 @@ public class TariffHelper {
 
 		List<Tariff> tariffs = new ArrayList<>();
 
-		try (Scanner sc = new Scanner(Paths.get(path))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
 			String line;
-			while (sc.hasNextLine()) {
-				line = sc.nextLine();
+			while ((line = br.readLine()) != null) {
 				StringTokenizer t = new StringTokenizer(line, ":");
 				// create appropriate Tariff object according to the beginning of each line
 				tariffs.add(initializeTariff(t));
-
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return tariffs;
 	}
 
@@ -58,40 +55,67 @@ public class TariffHelper {
 	private static Tariff initializeTariff(StringTokenizer t) {
 
 		TariffType tariffType = TariffType.valueOf(t.nextToken());
-		String name = t.nextToken();
 
+		String name = t.nextToken();
 		double payroll = Double.parseDouble(t.nextToken());
 		payrollRestriction(payroll);
-
 		PriceType sameNetPrice = PriceType.valueOf(t.nextToken());
 		PriceType otherNetPrice = PriceType.valueOf(t.nextToken());
 		PriceType landlinePrice = PriceType.valueOf(t.nextToken());
 		PriceType internetPrice = PriceType.valueOf(t.nextToken());
-
 		int subscribersQuantity = Integer.parseInt(t.nextToken());
 		subscribersQuantityRestriction(subscribersQuantity);
 
+		Tariff tariff;
+
 		switch (tariffType) {
 		case SOCIAL_TARIFF:
-
 			int favourNumber = Integer.parseInt(t.nextToken());
 			SocialGroupType group = SocialGroupType.valueOf(t.nextToken().toUpperCase());
 			favourNumberRestriction(favourNumber, group);
 			payroll = socialTariffBonus(group, payroll);
-			return new SocialTariff(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice,
-					subscribersQuantity, favourNumber, group);
+
+			tariff = new SocialTariff();
+			tariff.setName(name);
+			tariff.setPayroll(payroll);
+			tariff.setSameNetPrice(sameNetPrice);
+			tariff.setOtherNetPrice(otherNetPrice);
+			tariff.setLandlinePrice(landlinePrice);
+			tariff.setInternetPrice(internetPrice);
+			tariff.setSubscribersQuantity(subscribersQuantity);
+			((SocialTariff) tariff).setGroup(group);
+			((SocialTariff) tariff).setFavourNumber(favourNumber);
+			return tariff;
 
 		case GUEST_TARIFF:
 			int days = Integer.parseInt(t.nextToken());
 			payroll = getPayrolRateForGuestTariff(days, payroll);
-			return new GuestTariff(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice,
-					subscribersQuantity, days);
+
+			tariff = new GuestTariff();
+			tariff.setName(name);
+			tariff.setPayroll(payroll);
+			tariff.setSameNetPrice(sameNetPrice);
+			tariff.setOtherNetPrice(otherNetPrice);
+			tariff.setLandlinePrice(landlinePrice);
+			tariff.setInternetPrice(internetPrice);
+			tariff.setSubscribersQuantity(subscribersQuantity);
+			((GuestTariff) tariff).setDays(days);
+			return tariff;
 
 		case INTERNET_TARIFF:
 			boolean unlim = Boolean.parseBoolean(t.nextToken());
 			internetPrice = internetTariffBonus(internetPrice, unlim);
-			return new InternetTariff(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice,
-					subscribersQuantity, unlim);
+
+			tariff = new InternetTariff();
+			tariff.setName(name);
+			tariff.setPayroll(payroll);
+			tariff.setSameNetPrice(sameNetPrice);
+			tariff.setOtherNetPrice(otherNetPrice);
+			tariff.setLandlinePrice(landlinePrice);
+			tariff.setInternetPrice(internetPrice);
+			tariff.setSubscribersQuantity(subscribersQuantity);
+			((InternetTariff) tariff).setUnlim(unlim);
+			return tariff;
 
 		default:
 			throw new IllegalArgumentException("Invalid tariff's type");
@@ -162,10 +186,9 @@ public class TariffHelper {
 
 		Map<ParameterType, Range> inputParameters = new HashMap<>();
 
-		try (Scanner sc = new Scanner(Paths.get(path))) {
+		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
 			String line;
-			while (sc.hasNextLine()) {
-				line = sc.nextLine();
+			while ((line = br.readLine()) != null) {
 				StringTokenizer t = new StringTokenizer(line, ":");
 
 				ParameterType key;
@@ -185,15 +208,11 @@ public class TariffHelper {
 					from = t.nextToken();
 					to = t.nextToken();
 				}
-
 				inputParameters.put(key, new Range(from, to));
-
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return inputParameters;
 	}
 
@@ -212,12 +231,9 @@ public class TariffHelper {
 
 	// check what parameters have been written in the file
 	private static boolean checkParameters(Tariff tariff, Map<ParameterType, Range> inputParameters) {
-
 		for (Map.Entry<ParameterType, Range> entry : inputParameters.entrySet()) {
-
 			String from = entry.getValue().getFrom();
 			String to = entry.getValue().getTo();
-
 			switch (entry.getKey()) {
 			case NAME:
 				if (tariff.getName().toLowerCase().contains(from.toLowerCase())) {
@@ -260,7 +276,6 @@ public class TariffHelper {
 				return false;
 
 			case FAVOUR_NUMBER:
-
 				if (tariff instanceof SocialTariff
 						&& ((SocialTariff) tariff).getFavourNumber() >= Integer.parseInt(from)
 						&& ((SocialTariff) tariff).getFavourNumber() <= Integer.parseInt(to)) {
