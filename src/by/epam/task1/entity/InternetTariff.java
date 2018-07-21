@@ -1,17 +1,10 @@
 package by.epam.task1.entity;
 
-import by.epam.task1.util.PriceType;
-
 public class InternetTariff extends Tariff {
 
 	private boolean unlim;
 
-	public InternetTariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice,
-			PriceType landlinePrice, PriceType internetPrice, int subscribersQuantity, boolean unlim) {
-
-		super(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, subscribersQuantity);
-
-		this.unlim = unlim;
+	public InternetTariff() {
 	}
 
 	public boolean isUnlim() {

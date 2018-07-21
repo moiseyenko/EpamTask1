@@ -53,12 +53,11 @@ public class Range {
 			return false;
 		}
 		return true;
-
 	}
 
 	@Override
 	public String toString() {
-		return "Range [from=" + from + ", to=" + to + "]";
+		return getClass().getSimpleName()+" [from=" + from + ", to=" + to + "]";
 	}
 
 }

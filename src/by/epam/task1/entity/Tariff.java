@@ -7,7 +7,6 @@ public class Tariff {
 	private String name;
 	private double payroll;
 	private int subscribersQuantity;
-
 	// one minute's price in the same network
 	private PriceType sameNetPrice;
 	// one minute's price to other networks
@@ -18,22 +17,6 @@ public class Tariff {
 	private PriceType internetPrice;
 
 	public Tariff() {
-
-	}
-
-	public Tariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice, PriceType landlinePrice,
-			PriceType internetPrice, int subscribersQuantity) {
-
-		this.name = name;
-		this.payroll = payroll;
-
-		this.sameNetPrice = sameNetPrice;
-		this.otherNetPrice = otherNetPrice;
-		this.landlinePrice = landlinePrice;
-		this.internetPrice = internetPrice;
-
-		this.subscribersQuantity = subscribersQuantity;
-
 	}
 
 	public String getName() {
@@ -95,7 +78,6 @@ public class Tariff {
 
 	@Override
 	public int hashCode() {
-
 		final int prime = 31;
 		int result = 1;
 		long temp;
@@ -152,12 +134,10 @@ public class Tariff {
 
 	@Override
 	public String toString() {
-
-		return getClass().getSimpleName() + " [name=" + name + ", payroll="
-				+ String.format("%.1f", payroll) + ", sameNetPrice=" + sameNetPrice + ", otherNetPrice="
-				+ otherNetPrice + ", landlinePrice=" + landlinePrice + ", internetPrice=" + internetPrice
-				+ ", subscribersQuantity=" + subscribersQuantity + "]";
+		return getClass().getSimpleName() + " [name=" + name + ", payroll=" + String.format("%.1f", payroll)
+				+ ", sameNetPrice=" + sameNetPrice + ", otherNetPrice=" + otherNetPrice + ", landlinePrice="
+				+ landlinePrice + ", internetPrice=" + internetPrice + ", subscribersQuantity=" + subscribersQuantity
+				+ "]";
 
 	}
-
 }

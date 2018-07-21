@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="Warn">
+  <Appenders>
+  	<Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%highlight{%d{HH:mm:ss} [%t] %level %c{3} - %msg%n%throwable}"/>
+   </Console>
+   <File name="File" fileName="logs/fileLog.log" append="false">
+      <PatternLayout>
+        <Pattern>%d %p %c{-3} [%t] %m%n</Pattern>
+      </PatternLayout>
+    </File>
+  </Appenders>
+  <Loggers>
+  	<Logger name="by.epam.task1.util.Message" level="info" additivity="false">
+  		<AppenderRef ref="Console"/>
+  	</Logger>
+  	<Logger name="by.epam.task1.util.TariffHelper" level="debug" additivity="false">
+  		<AppenderRef ref="File"/>
+  	</Logger>
+  	<Root level="error">
+      <AppenderRef ref="Console"/>
+    </Root>   
+  </Loggers>
+</Configuration>

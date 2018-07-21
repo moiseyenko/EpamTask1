@@ -1,17 +1,10 @@
 package by.epam.task1.entity;
 
-import by.epam.task1.util.PriceType;
-
 public class GuestTariff extends Tariff {
 
 	private int days;
 
-	public GuestTariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice,
-			PriceType landlinePrice, PriceType internetPrice, int subscribersQuantity, int days) {
-
-		super(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, subscribersQuantity);
-
-		this.days = days;
+	public GuestTariff() {
 	}
 
 	public int getDays() {
@@ -21,8 +14,6 @@ public class GuestTariff extends Tariff {
 	public void setDays(int days) {
 		this.days = days;
 	}
-
-	
 
 	@Override
 	public int hashCode() {
@@ -56,5 +47,4 @@ public class GuestTariff extends Tariff {
 		String withoutLastBracketString = new String(superString.toCharArray(), 0, superString.length() - 1);
 		return withoutLastBracketString + ", days=" + days + "]";
 	}
-
 }

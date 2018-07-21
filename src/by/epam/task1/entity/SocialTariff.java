@@ -1,6 +1,5 @@
 package by.epam.task1.entity;
 
-import by.epam.task1.util.PriceType;
 import by.epam.task1.util.SocialGroupType;
 
 public class SocialTariff extends Tariff {
@@ -8,14 +7,7 @@ public class SocialTariff extends Tariff {
 	private int favourNumber;
 	private SocialGroupType group;
 
-	public SocialTariff(String name, double payroll, PriceType sameNetPrice, PriceType otherNetPrice,
-			PriceType landlinePrice, PriceType internetPrice, int subscribersQuantity, int favourNumber,
-			SocialGroupType group) {
-
-		super(name, payroll, sameNetPrice, otherNetPrice, landlinePrice, internetPrice, subscribersQuantity);
-
-		this.group = group;
-		this.favourNumber = favourNumber;
+	public SocialTariff() {
 	}
 
 	public SocialGroupType getGroup() {

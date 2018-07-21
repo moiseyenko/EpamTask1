@@ -4,8 +4,11 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.StringJoiner;
 
-public class Message {
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+public class Message {
+	private static Logger log = LogManager.getLogger(Message.class);
 	public static void showMsg(String mandatoryMsg, Object... otherMsg) {
 		StringJoiner joiner = new StringJoiner(", ");
 		for (Object msg : otherMsg) {
@@ -30,7 +33,7 @@ public class Message {
 			}
 
 		}
-		System.out.println("\n" + mandatoryMsg + joiner);
+		log.info(mandatoryMsg + joiner+ "\n");
 	}
 
 }
