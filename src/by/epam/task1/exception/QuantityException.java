@@ -1,4 +1,4 @@
-package by.epam.task1.util;
+package by.epam.task1.exception;
 
 public class QuantityException extends Exception{
 	

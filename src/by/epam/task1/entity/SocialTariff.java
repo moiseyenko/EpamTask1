@@ -1,6 +1,6 @@
 package by.epam.task1.entity;
 
-import by.epam.task1.util.SocialGroupType;
+import by.epam.task1.util.enums.SocialGroupType;
 
 public class SocialTariff extends Tariff {
 

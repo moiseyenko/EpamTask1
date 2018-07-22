@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.Map;
 import by.epam.task1.entity.Tariff;
 import by.epam.task1.util.Message;
-import by.epam.task1.util.ParameterType;
 import by.epam.task1.util.Range;
 import by.epam.task1.util.TariffConstants;
 import by.epam.task1.util.TariffHelper;
+import by.epam.task1.util.enums.ParameterType;
 public class Runner {
 
 	public static void main(String[] args) {

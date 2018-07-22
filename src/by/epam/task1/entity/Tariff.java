@@ -1,6 +1,6 @@
 package by.epam.task1.entity;
 
-import by.epam.task1.util.PriceType;
+import by.epam.task1.util.enums.PriceType;
 
 public class Tariff {
 

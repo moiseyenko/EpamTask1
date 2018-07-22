@@ -19,33 +19,38 @@ import org.apache.logging.log4j.Logger;
 import by.epam.task1.entity.GuestTariff;
 import by.epam.task1.entity.SocialTariff;
 import by.epam.task1.entity.Tariff;
+import by.epam.task1.exception.QuantityException;
+import by.epam.task1.util.enums.ParameterType;
+import by.epam.task1.util.enums.PriceType;
+import by.epam.task1.util.enums.SocialGroupType;
+import by.epam.task1.util.enums.TariffType;
 import by.epam.task1.entity.InternetTariff;
 
 public class TariffHelper {
 
-	private final static Logger log = LogManager.getLogger(TariffHelper.class);
+	private final static Logger LOG = LogManager.getLogger(TariffHelper.class);
 
 	// count total subscribers amount
 	public static int countTotalSubscribers(List<Tariff> tariffList) {
-		log.debug("Start countTotalSubscribers");
+		LOG.debug("Start countTotalSubscribers");
 		int result = 0;
 		for (Tariff tariff : tariffList) {
 			result += tariff.getSubscribersQuantity();
 		}
-		log.debug("End countTotalSubscribers with result: " + result);
+		LOG.debug("End countTotalSubscribers with result: " + result);
 		return result;
 	}
 
 	// sort tariffs by payroll
 	public static void sortByPayroll(List<Tariff> tariffList) {
-		log.debug("Start sortByPayroll with tariffList hashcode: " + tariffList.hashCode());
+		LOG.debug("Start sortByPayroll with tariffList hashcode: " + tariffList.hashCode());
 		tariffList.sort(Comparator.comparingDouble(Tariff::getPayroll));
-		log.debug("End sortByPayroll with tariffList hashcode: " + tariffList.hashCode());
+		LOG.debug("End sortByPayroll with tariffList hashcode: " + tariffList.hashCode());
 	}
 
 	// return tariffs' list after reading the file
 	public static List<Tariff> readTariffsFile(String path) {
-		log.debug("Start readTariffsFile with path: " + path);
+		LOG.debug("Start readTariffsFile with path: " + path);
 		List<Tariff> tariffs = new ArrayList<>();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
@@ -54,28 +59,29 @@ public class TariffHelper {
 				StringTokenizer t = new StringTokenizer(line, ":");
 				// create appropriate Tariff object according to the beginning of each line
 				Tariff tariff = initializeTariff(t);
-				log.debug("initializeTariff Return: " + tariff.getName());
+				LOG.debug("initializeTariff Return: " + tariff.getName());
 				// add Tariff to list
 				tariffs.add(tariff);
-
 			}
-
 		} catch (FileNotFoundException e) {
-			log.error(e);
-		} catch (QuantityException e1) {
-			log.error(e1);
-		} catch (IOException e2) {
-			log.error(e2);
+			LOG.error(e + "Tariffs' file not found");
+		} catch (QuantityException | IOException e1) {
+			LOG.error(e1);
 		}
-		log.debug("End readTariffsFile with tariffs' list size: " + tariffs.size());
+		LOG.debug("End readTariffsFile with tariffs' list size: " + tariffs.size());
 		return tariffs;
 	}
 
 	// initialize tariff
 	private static Tariff initializeTariff(StringTokenizer t) throws QuantityException {
-		log.debug("Start initializeTariff with StringTokenizer.count: " + t.countTokens());
-		TariffType tariffType = TariffType.valueOf(t.nextToken());
-
+		LOG.debug("Start initializeTariff with StringTokenizer.count: " + t.countTokens());
+		TariffType tariffType;
+		try {
+			tariffType = TariffType.valueOf(t.nextToken());
+		} catch (Exception e) {
+			LOG.error(e);
+			throw new IllegalArgumentException();
+		}
 		String name = t.nextToken();
 		double payroll = Double.parseDouble(t.nextToken());
 		payrollRestriction(payroll);
@@ -86,58 +92,54 @@ public class TariffHelper {
 		int subscribersQuantity = Integer.parseInt(t.nextToken());
 		subscribersQuantityRestriction(subscribersQuantity);
 
-		Tariff tariff;
 		switch (tariffType) {
 		case SOCIAL_TARIFF:
 			int favourNumber = Integer.parseInt(t.nextToken());
 			SocialGroupType group = SocialGroupType.valueOf(t.nextToken().toUpperCase());
 			favourNumberRestriction(favourNumber, group);
 			payroll = socialTariffBonus(group, payroll);
-			log.debug("Return socialTariffBonus payroll:" + payroll);
-
-			tariff = new SocialTariff();
-			tariff.setName(name);
-			tariff.setPayroll(payroll);
-			tariff.setSameNetPrice(sameNetPrice);
-			tariff.setOtherNetPrice(otherNetPrice);
-			tariff.setLandlinePrice(landlinePrice);
-			tariff.setInternetPrice(internetPrice);
-			tariff.setSubscribersQuantity(subscribersQuantity);
-			((SocialTariff) tariff).setGroup(group);
-			((SocialTariff) tariff).setFavourNumber(favourNumber);
-			return tariff;
+			LOG.debug("Return socialTariffBonus payroll:" + payroll);
+			SocialTariff socialTariff = new SocialTariff();
+			socialTariff.setName(name);
+			socialTariff.setPayroll(payroll);
+			socialTariff.setSameNetPrice(sameNetPrice);
+			socialTariff.setOtherNetPrice(otherNetPrice);
+			socialTariff.setLandlinePrice(landlinePrice);
+			socialTariff.setInternetPrice(internetPrice);
+			socialTariff.setSubscribersQuantity(subscribersQuantity);
+			socialTariff.setGroup(group);
+			socialTariff.setFavourNumber(favourNumber);
+			return socialTariff;
 
 		case GUEST_TARIFF:
 			int days = Integer.parseInt(t.nextToken());
 			daysRestriction(days);
 			payroll = getPayrolRateForGuestTariff(days, payroll);
-
-			tariff = new GuestTariff();
-			tariff.setName(name);
-			tariff.setPayroll(payroll);
-			tariff.setSameNetPrice(sameNetPrice);
-			tariff.setOtherNetPrice(otherNetPrice);
-			tariff.setLandlinePrice(landlinePrice);
-			tariff.setInternetPrice(internetPrice);
-			tariff.setSubscribersQuantity(subscribersQuantity);
-			((GuestTariff) tariff).setDays(days);
-			return tariff;
+			GuestTariff guestTariff = new GuestTariff();
+			guestTariff.setName(name);
+			guestTariff.setPayroll(payroll);
+			guestTariff.setSameNetPrice(sameNetPrice);
+			guestTariff.setOtherNetPrice(otherNetPrice);
+			guestTariff.setLandlinePrice(landlinePrice);
+			guestTariff.setInternetPrice(internetPrice);
+			guestTariff.setSubscribersQuantity(subscribersQuantity);
+			guestTariff.setDays(days);
+			return guestTariff;
 
 		case INTERNET_TARIFF:
 			boolean unlim = Boolean.parseBoolean(t.nextToken());
 			internetPrice = internetTariffBonus(internetPrice, unlim);
-			log.debug("Return internetTariff:" + internetPrice);
-
-			tariff = new InternetTariff();
-			tariff.setName(name);
-			tariff.setPayroll(payroll);
-			tariff.setSameNetPrice(sameNetPrice);
-			tariff.setOtherNetPrice(otherNetPrice);
-			tariff.setLandlinePrice(landlinePrice);
-			tariff.setInternetPrice(internetPrice);
-			tariff.setSubscribersQuantity(subscribersQuantity);
-			((InternetTariff) tariff).setUnlim(unlim);
-			return tariff;
+			LOG.debug("Return internetTariff:" + internetPrice);
+			InternetTariff internetTariff = new InternetTariff();
+			internetTariff.setName(name);
+			internetTariff.setPayroll(payroll);
+			internetTariff.setSameNetPrice(sameNetPrice);
+			internetTariff.setOtherNetPrice(otherNetPrice);
+			internetTariff.setLandlinePrice(landlinePrice);
+			internetTariff.setInternetPrice(internetPrice);
+			internetTariff.setSubscribersQuantity(subscribersQuantity);
+			internetTariff.setUnlim(unlim);
+			return internetTariff;
 
 		default:
 			throw new IllegalArgumentException("Invalid tariff's type");
@@ -179,7 +181,7 @@ public class TariffHelper {
 
 	// set internetTariff's bonus depending on unlim parameter
 	public static PriceType internetTariffBonus(PriceType internetPrice, boolean unlim) {
-		log.debug("Start internetTariffBonus with unlim:" + unlim);
+		LOG.debug("Start internetTariffBonus with unlim:" + unlim);
 		if (unlim) {
 			return PriceType.ZERO;
 		} else {
@@ -189,11 +191,11 @@ public class TariffHelper {
 
 	// set socialTariff's bonus depending on subscriber's social group
 	public static double socialTariffBonus(SocialGroupType group, double payroll) {
-		log.debug("Start socialTariffBonus with group:" + group + " and payroll: " + payroll);
+		LOG.debug("Start socialTariffBonus with group:" + group + " and payroll: " + payroll);
 		if (group.equals(SocialGroupType.YOUTH)) {
-			return payroll *= TariffConstants.YOUTH_BONUS_RATE;
+			return payroll * TariffConstants.YOUTH_BONUS_RATE;
 		} else if (group.equals(SocialGroupType.PENSIONER)) {
-			return payroll *= TariffConstants.PENSIONER_BONUS_RATE;
+			return payroll * TariffConstants.PENSIONER_BONUS_RATE;
 		} else {
 			return payroll;
 		}
@@ -201,16 +203,16 @@ public class TariffHelper {
 
 	// set payroll rate for guestTariff depending on days' number
 	public static double getPayrolRateForGuestTariff(int days, double payroll) {
-		log.debug("Start getPayrolRateForGuestTariff with days: "+days+" and payroll: "+payroll);
+		LOG.debug("Start getPayrolRateForGuestTariff with days: " + days + " and payroll: " + payroll);
 		int dayOfMonth = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
 		payroll *= (double) days / dayOfMonth;
-		log.debug("End getPayrolRateForGuestTariff with payroll: "+payroll);
+		LOG.debug("End getPayrolRateForGuestTariff with payroll: " + payroll);
 		return payroll;
 	}
 
 	// return parameters' map after reading the file
 	public static Map<ParameterType, Range> readParametersRange(String path) {
-		log.debug("Start readParametersRange with path: "+path);
+		LOG.debug("Start readParametersRange with path: " + path);
 		Map<ParameterType, Range> inputParameters = new HashMap<>();
 
 		try (BufferedReader br = new BufferedReader(new FileReader(new File(path)))) {
@@ -238,33 +240,35 @@ public class TariffHelper {
 				inputParameters.put(key, new Range(from, to));
 			}
 		} catch (FileNotFoundException e) {
-			log.error(e);
+			LOG.error(e + "Parameters' file not found");
 		} catch (IOException e1) {
-			log.error(e1);
+			LOG.error(e1);
 		}
-		log.debug("End readParametersRange with Map size: "+inputParameters.size());
+		LOG.debug("End readParametersRange with Map size: " + inputParameters.size());
 		return inputParameters;
 	}
 
 	// form list with suit tariffs
 	public static List<String> searchTariff(List<Tariff> tariffs, Map<ParameterType, Range> inputParameters) {
-		log.debug("Start searchTariff with tariffs list size: "+tariffs.size()+" and parameters map size: "+ inputParameters.size());
+		LOG.debug("Start searchTariff with tariffs list size: " + tariffs.size() + " and parameters map size: "
+				+ inputParameters.size());
 		List<String> list = new ArrayList<>();
 
 		for (Tariff tariff : tariffs) {
 			boolean isSuit = checkParameters(tariff, inputParameters);
-			log.debug("checkParameters Return :"+ isSuit);
+			LOG.debug("checkParameters Return :" + isSuit);
 			if (isSuit) {
 				list.add(tariff.getName());
 			}
 		}
-		log.debug("End searchTariff with result list size: "+list.size());
+		LOG.debug("End searchTariff with result list size: " + list.size());
 		return list;
 	}
 
 	// check what parameters have been written in the file
 	private static boolean checkParameters(Tariff tariff, Map<ParameterType, Range> inputParameters) {
-		log.debug("Start checkParameters with tariff: "+tariff.getName()+" and parameters map size: "+ inputParameters.size());
+		LOG.debug("Start checkParameters with tariff: " + tariff.getName() + " and parameters map size: "
+				+ inputParameters.size());
 		for (Map.Entry<ParameterType, Range> entry : inputParameters.entrySet()) {
 			String from = entry.getValue().getFrom();
 			String to = entry.getValue().getTo();

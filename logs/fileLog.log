@@ -1,12 +1,34 @@
-2018-07-21 20:22:08,690 DEBUG util.TariffHelper [main] Start readTariffsFile with path: inputTariffs.txt
-2018-07-21 20:22:08,695 ERROR util.TariffHelper [main] java.io.FileNotFoundException: inputTariffs.txt (The system cannot find the file specified)
-2018-07-21 20:22:08,695 DEBUG util.TariffHelper [main] End readTariffsFile with tariffs' list size: 0
-2018-07-21 20:22:08,696 DEBUG util.TariffHelper [main] Start countTotalSubscribers
-2018-07-21 20:22:08,696 DEBUG util.TariffHelper [main] End countTotalSubscribers with result: 0
-2018-07-21 20:22:08,698 DEBUG util.TariffHelper [main] Start sortByPayroll with tariffList hashcode: 1
-2018-07-21 20:22:08,793 DEBUG util.TariffHelper [main] End sortByPayroll with tariffList hashcode: 1
-2018-07-21 20:22:08,793 DEBUG util.TariffHelper [main] Start readParametersRange with path: inputParameters.txt
-2018-07-21 20:22:08,794 ERROR util.TariffHelper [main] java.io.FileNotFoundException: inputParameters.txt (The system cannot find the file specified)
-2018-07-21 20:22:08,794 DEBUG util.TariffHelper [main] End readParametersRange with Map size: 0
-2018-07-21 20:22:08,794 DEBUG util.TariffHelper [main] Start searchTariff with tariffs list size: 0 and parameters map size: 0
-2018-07-21 20:22:08,794 DEBUG util.TariffHelper [main] End searchTariff with result list size: 0
+2018-07-22 22:09:39,495 DEBUG util.TariffHelper [main] Start readTariffsFile with path: inputTariffs.txt
+2018-07-22 22:09:39,499 DEBUG util.TariffHelper [main] Start initializeTariff with StringTokenizer.count: 10
+2018-07-22 22:09:39,502 DEBUG util.TariffHelper [main] Start socialTariffBonus with group:YOUTH and payroll: 55.0
+2018-07-22 22:09:39,502 DEBUG util.TariffHelper [main] Return socialTariffBonus payroll:27.5
+2018-07-22 22:09:39,502 DEBUG util.TariffHelper [main] initializeTariff Return: ForYouth
+2018-07-22 22:09:39,503 DEBUG util.TariffHelper [main] Start initializeTariff with StringTokenizer.count: 10
+2018-07-22 22:09:39,503 DEBUG util.TariffHelper [main] Start socialTariffBonus with group:PENSIONER and payroll: 55.0
+2018-07-22 22:09:39,503 DEBUG util.TariffHelper [main] Return socialTariffBonus payroll:16.5
+2018-07-22 22:09:39,503 DEBUG util.TariffHelper [main] initializeTariff Return: ForPensioner
+2018-07-22 22:09:39,503 DEBUG util.TariffHelper [main] Start initializeTariff with StringTokenizer.count: 9
+2018-07-22 22:09:39,503 DEBUG util.TariffHelper [main] Start getPayrolRateForGuestTariff with days: 10 and payroll: 25.0
+2018-07-22 22:09:39,503 DEBUG util.TariffHelper [main] End getPayrolRateForGuestTariff with payroll: 8.064516129032258
+2018-07-22 22:09:39,504 DEBUG util.TariffHelper [main] initializeTariff Return: Tourist
+2018-07-22 22:09:39,504 DEBUG util.TariffHelper [main] Start initializeTariff with StringTokenizer.count: 9
+2018-07-22 22:09:39,504 DEBUG util.TariffHelper [main] Start internetTariffBonus with unlim:true
+2018-07-22 22:09:39,504 DEBUG util.TariffHelper [main] Return internetTariff:ZERO
+2018-07-22 22:09:39,504 DEBUG util.TariffHelper [main] initializeTariff Return: Unlim5000
+2018-07-22 22:09:39,504 DEBUG util.TariffHelper [main] End readTariffsFile with tariffs' list size: 4
+2018-07-22 22:09:39,504 DEBUG util.TariffHelper [main] Start countTotalSubscribers
+2018-07-22 22:09:39,505 DEBUG util.TariffHelper [main] End countTotalSubscribers with result: 191
+2018-07-22 22:09:39,508 DEBUG util.TariffHelper [main] Start sortByPayroll with tariffList hashcode: -1940208690
+2018-07-22 22:09:39,576 DEBUG util.TariffHelper [main] End sortByPayroll with tariffList hashcode: 75438286
+2018-07-22 22:09:39,577 DEBUG util.TariffHelper [main] Start readParametersRange with path: inputParameters.txt
+2018-07-22 22:09:39,579 DEBUG util.TariffHelper [main] End readParametersRange with Map size: 6
+2018-07-22 22:09:39,579 DEBUG util.TariffHelper [main] Start searchTariff with tariffs list size: 4 and parameters map size: 6
+2018-07-22 22:09:39,579 DEBUG util.TariffHelper [main] Start checkParameters with tariff: Tourist and parameters map size: 6
+2018-07-22 22:09:39,579 DEBUG util.TariffHelper [main] checkParameters Return :false
+2018-07-22 22:09:39,580 DEBUG util.TariffHelper [main] Start checkParameters with tariff: ForPensioner and parameters map size: 6
+2018-07-22 22:09:39,580 DEBUG util.TariffHelper [main] checkParameters Return :false
+2018-07-22 22:09:39,580 DEBUG util.TariffHelper [main] Start checkParameters with tariff: ForYouth and parameters map size: 6
+2018-07-22 22:09:39,580 DEBUG util.TariffHelper [main] checkParameters Return :false
+2018-07-22 22:09:39,580 DEBUG util.TariffHelper [main] Start checkParameters with tariff: Unlim5000 and parameters map size: 6
+2018-07-22 22:09:39,580 DEBUG util.TariffHelper [main] checkParameters Return :true
+2018-07-22 22:09:39,580 DEBUG util.TariffHelper [main] End searchTariff with result list size: 1
