@@ -34,7 +34,9 @@ public class Message {
 			}
 
 		}
-		LOG.info(mandatoryMsg + joiner + "\n");
+		if (LOG.isInfoEnabled()) {
+			LOG.info(mandatoryMsg + joiner + "\n");
+		}
 	}
 
 }
