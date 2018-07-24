@@ -134,10 +134,9 @@ public class Tariff {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [name=" + name + ", payroll=" + String.format("%.1f", payroll)
+		return getClass().getSimpleName() + ": name=" + name + ", payroll=" + String.format("%.1f", payroll)
 				+ ", sameNetPrice=" + sameNetPrice + ", otherNetPrice=" + otherNetPrice + ", landlinePrice="
-				+ landlinePrice + ", internetPrice=" + internetPrice + ", subscribersQuantity=" + subscribersQuantity
-				+ "]";
+				+ landlinePrice + ", internetPrice=" + internetPrice + ", subscribersQuantity=" + subscribersQuantity;
 
 	}
 }

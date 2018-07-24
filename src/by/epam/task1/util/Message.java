@@ -8,7 +8,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Message {
-	private static Logger log = LogManager.getLogger(Message.class);
+	private static Logger LOG = LogManager.getLogger(Message.class);
+
 	public static void showMsg(String mandatoryMsg, Object... otherMsg) {
 		StringJoiner joiner = new StringJoiner(", ");
 		for (Object msg : otherMsg) {
@@ -33,7 +34,7 @@ public class Message {
 			}
 
 		}
-		log.info(mandatoryMsg + joiner+ "\n");
+		LOG.info(mandatoryMsg + joiner + "\n");
 	}
 
 }

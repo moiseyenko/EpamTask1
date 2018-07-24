@@ -43,8 +43,6 @@ public class GuestTariff extends Tariff {
 
 	@Override
 	public String toString() {
-		String superString = super.toString();
-		String withoutLastBracketString = new String(superString.toCharArray(), 0, superString.length() - 1);
-		return withoutLastBracketString + ", days=" + days + "]";
+		return super.toString() + ", days=" + days;
 	}
 }

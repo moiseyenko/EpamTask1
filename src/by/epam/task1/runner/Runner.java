@@ -8,10 +8,11 @@ import by.epam.task1.util.Range;
 import by.epam.task1.util.TariffConstants;
 import by.epam.task1.util.TariffHelper;
 import by.epam.task1.util.enums.ParameterType;
+
 public class Runner {
 
 	public static void main(String[] args) {
-		
+
 		List<Tariff> tariffs = TariffHelper.readTariffsFile(TariffConstants.TARIFFS_PATH);
 
 		int totalAbonents = TariffHelper.countTotalSubscribers(tariffs);

@@ -64,9 +64,9 @@ public class TariffHelper {
 				tariffs.add(tariff);
 			}
 		} catch (FileNotFoundException e) {
-			LOG.error(e + "Tariffs' file not found");
+			LOG.error("Tariffs' file not found", e);
 		} catch (QuantityException | IOException e1) {
-			LOG.error(e1);
+			LOG.error("Tariff's exception", e1);
 		}
 		LOG.debug("End readTariffsFile with tariffs' list size: " + tariffs.size());
 		return tariffs;
@@ -79,7 +79,7 @@ public class TariffHelper {
 		try {
 			tariffType = TariffType.valueOf(t.nextToken());
 		} catch (Exception e) {
-			LOG.error(e);
+			LOG.error("Invalid tariff's type", e);
 			throw new IllegalArgumentException();
 		}
 		String name = t.nextToken();
@@ -228,21 +228,31 @@ public class TariffHelper {
 					continue;
 				} else if (t.countTokens() < 3
 						&& (line.startsWith("NAME") | line.startsWith("GROUP") | line.startsWith("UNLIM"))) {
-					key = ParameterType.valueOf(t.nextToken());
+					try {
+						key = ParameterType.valueOf(t.nextToken());
+					} catch (Exception e) {
+						LOG.error("Invalid parameter's type", e);
+						throw new IllegalArgumentException();
+					}
 					from = to = t.nextToken();
 				} else if (t.countTokens() < 3) {
 					continue;
 				} else {
-					key = ParameterType.valueOf(t.nextToken());
+					try {
+						key = ParameterType.valueOf(t.nextToken());
+					} catch (Exception e) {
+						LOG.error("Invalid parameter's type", e);
+						throw new IllegalArgumentException();
+					}
 					from = t.nextToken();
 					to = t.nextToken();
 				}
 				inputParameters.put(key, new Range(from, to));
 			}
 		} catch (FileNotFoundException e) {
-			LOG.error(e + "Parameters' file not found");
+			LOG.error("Parameters' file not found", e);
 		} catch (IOException e1) {
-			LOG.error(e1);
+			LOG.error("Input exception", e1);
 		}
 		LOG.debug("End readParametersRange with Map size: " + inputParameters.size());
 		return inputParameters;
@@ -286,45 +296,54 @@ public class TariffHelper {
 				return false;
 
 			case SAME_NET_PRICE:
-				if (tariff.getSameNetPrice().getPrice() >= Double.parseDouble(from)
-						&& tariff.getSameNetPrice().getPrice() <= Double.parseDouble(to)) {
+				PriceType sameNetPriceType = tariff.getSameNetPrice();
+				if (sameNetPriceType.getPrice() >= Double.parseDouble(from)
+						&& sameNetPriceType.getPrice() <= Double.parseDouble(to)) {
 					continue;
 				}
 				return false;
 
 			case OTHER_NET_PRICE:
-				if (tariff.getOtherNetPrice().getPrice() >= Double.parseDouble(from)
-						&& tariff.getOtherNetPrice().getPrice() <= Double.parseDouble(to)) {
+				PriceType otherNetPriceType = tariff.getOtherNetPrice();
+				if (otherNetPriceType.getPrice() >= Double.parseDouble(from)
+						&& otherNetPriceType.getPrice() <= Double.parseDouble(to)) {
 					continue;
 				}
 				return false;
 
 			case LANDLINE_PRICE:
-				if (tariff.getLandlinePrice().getPrice() >= Double.parseDouble(from)
-						&& tariff.getLandlinePrice().getPrice() <= Double.parseDouble(to)) {
+				PriceType landlinePriceType = tariff.getLandlinePrice();
+				if (landlinePriceType.getPrice() >= Double.parseDouble(from)
+						&& landlinePriceType.getPrice() <= Double.parseDouble(to)) {
 					continue;
 				}
 				return false;
 
 			case INTERNET_PRICE:
-				if (tariff.getInternetPrice().getPrice() >= Double.parseDouble(from)
-						&& tariff.getInternetPrice().getPrice() <= Double.parseDouble(to)) {
+				PriceType internetPriceType = tariff.getInternetPrice();
+				if (internetPriceType.getPrice() >= Double.parseDouble(from)
+						&& internetPriceType.getPrice() <= Double.parseDouble(to)) {
 					continue;
 				}
 				return false;
 
 			case FAVOUR_NUMBER:
-				if (tariff instanceof SocialTariff
-						&& ((SocialTariff) tariff).getFavourNumber() >= Integer.parseInt(from)
-						&& ((SocialTariff) tariff).getFavourNumber() <= Integer.parseInt(to)) {
-					continue;
+				if (tariff instanceof SocialTariff) {
+					SocialTariff socialTariff = (SocialTariff) tariff;
+					if (socialTariff.getFavourNumber() >= Integer.parseInt(from)
+							&& socialTariff.getFavourNumber() <= Integer.parseInt(to)) {
+						continue;
+					}
 				}
 				return false;
 
 			case GROUP:
-				if (tariff instanceof SocialTariff
-						&& ((SocialTariff) tariff).getGroup().name().toLowerCase().contains(from.toLowerCase())) {
-					continue;
+				if (tariff instanceof SocialTariff) {
+					SocialTariff socialTariff = (SocialTariff) tariff;
+					SocialGroupType currentGroup = socialTariff.getGroup();
+					if (currentGroup.name().toLowerCase().contains(from.toLowerCase())) {
+						continue;
+					}
 				}
 				return false;
 
@@ -336,9 +355,12 @@ public class TariffHelper {
 				return false;
 
 			case DAYS:
-				if (tariff instanceof GuestTariff && ((GuestTariff) tariff).getDays() >= Integer.parseInt(from)
-						&& ((GuestTariff) tariff).getDays() <= Integer.parseInt(to)) {
-					continue;
+				if (tariff instanceof GuestTariff) {
+					GuestTariff guestTariff = (GuestTariff) tariff;
+					if (guestTariff.getDays() >= Integer.parseInt(from)
+							&& guestTariff.getDays() <= Integer.parseInt(to)) {
+						continue;
+					}
 				}
 				return false;
 
